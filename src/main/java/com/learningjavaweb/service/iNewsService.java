@@ -1,10 +1,10 @@
-package com.learningjavaweb.dao;
+package com.learningjavaweb.service;
 
 import java.util.List;
 
 import com.learningjavaweb.model.NewsModel;
 
-public interface iNewDAO extends GenericDAO {
+public interface iNewsService {
 	List<NewsModel> findByCategoryId(Long categoryid);
-	Long save(NewsModel newModel);
+	NewsModel save(NewsModel newModel);
 }
