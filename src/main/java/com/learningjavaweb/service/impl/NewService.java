@@ -1,5 +1,6 @@
 package com.learningjavaweb.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,9 +22,33 @@ public class NewService implements iNewsService {
 
 	@Override
 	public NewsModel save(NewsModel newModel) {
-		Long newid = newsDAO.save(newModel);
-		System.out.println(newid);
-		return null;
+		newModel.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+		newModel.setCreatedBy("");
+		Long newId = newsDAO.save(newModel);
+		return newsDAO.findOne(newId);
+		
+	}
+
+
+	@Override
+	public NewsModel update(NewsModel updateNew) {
+		NewsModel oldnew = newsDAO.findOne(updateNew.getId());
+		updateNew.setCreatedDate(oldnew.getCreatedDate());
+		updateNew.setCreatedBy(oldnew.getCreatedBy());
+		updateNew.setModifiedDate(new Timestamp(System.currentTimeMillis()));
+		updateNew.setModifiedBy("");
+		newsDAO.update(updateNew);
+		return newsDAO.findOne(updateNew.getId());
+	}
+
+
+	@Override
+	public void delete(Long[] ids) {
+//		delete comment		
+		for (long id: ids) {
+			newsDAO.delete(id);
+		}
+		
 	}
 
 }

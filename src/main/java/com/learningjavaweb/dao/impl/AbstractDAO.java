@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import com.learningjavaweb.mapper.RowMapper;
 import com.learningjavaweb.model.NewsModel;
 
 public class AbstractDAO<T> implements GenericDAO<T> {
-	
+
 	/* Kết nối database */
 	public Connection getConnection() {
 		try {
@@ -28,7 +29,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			return null;
 		}
 	}
-	
+
 	/* Truy vấn dữ liệu từ database */
 	@Override
 	public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) {
@@ -76,27 +77,28 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 	}
 
 	private void setParameter(PreparedStatement statement, Object... parameters) {
-		
+
 		try {
-			for(int i = 0; i < parameters.length; i++) {
+			for (int i = 0; i < parameters.length; i++) {
 				Object parameter = parameters[i];
 				int index = i + 1;
-				
-				if(parameter instanceof Long) {
+
+				if (parameter instanceof Long) {
 					statement.setLong(index, (long) parameter);
-				}else if (parameter instanceof String) {
+				} else if (parameter instanceof String) {
 					statement.setString(index, (String) parameter);
-					
-				}else if (parameter instanceof Integer) {
+
+				} else if (parameter instanceof Integer) {
 					statement.setInt(index, (Integer) parameter);
-				}else if (parameter instanceof Timestamp) {
+				} else if (parameter instanceof Timestamp) {
 					statement.setTimestamp(index, (Timestamp) parameter);
 				}
-			}	
+					 
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
@@ -110,7 +112,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			setParameter(statement, parameters);
 			statement.executeUpdate();
 			connection.commit();
-			
+
 		} catch (SQLException e) {
 			if (connection != null) {
 				try {
@@ -120,7 +122,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 				}
 			}
 
-		}finally {
+		} finally {
 			try {
 				if (connection != null) {
 					connection.close();
@@ -133,7 +135,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 				e2.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -145,11 +147,11 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			Long id = null;
 			connection = getConnection();
 			connection.setAutoCommit(false);
-			statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			setParameter(statement, parameters);
 			statement.executeUpdate();
 			resultSet = statement.getGeneratedKeys();
-			if(resultSet.next()) {
+			if (resultSet.next()) {
 				id = resultSet.getLong(1);
 			}
 			connection.commit();
@@ -163,7 +165,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 				}
 			}
 
-		}finally {
+		} finally {
 			try {
 				if (connection != null) {
 					connection.close();
@@ -181,7 +183,5 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 		}
 		return null;
 	}
-
-
 
 }
