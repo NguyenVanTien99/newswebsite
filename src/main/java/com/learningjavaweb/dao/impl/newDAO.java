@@ -5,6 +5,7 @@ import java.util.List;
 import com.learningjavaweb.dao.iNewDAO;
 import com.learningjavaweb.mapper.NewMapper;
 import com.learningjavaweb.model.NewsModel;
+import com.learningjavaweb.paging.Pageble;
 
 public class newDAO extends AbstractDAO<NewsModel> implements iNewDAO {
 	
@@ -51,5 +52,26 @@ public class newDAO extends AbstractDAO<NewsModel> implements iNewDAO {
 		update(sql, id);		
 		
 	}
+
+	@Override
+	public List<NewsModel> findAll(Pageble pageble) {
+		/* String sql ="select * from news limit ?,?"; */
+		StringBuilder sql = new StringBuilder("SELECT * FROM news");
+		if(pageble.getSorter() != null) {
+			sql.append(" ORDER BY "+pageble.getSorter().getSortName() +" " +pageble.getSorter().getSortBy()+"");
+		}
+		if(pageble.getOffset() != null && pageble.getLimmit() != null) {
+			sql.append(" limit "+pageble.getOffset()+", "+pageble.getLimmit()+"");
+		}
+		return query(sql.toString(), new NewMapper(), new NewMapper());
+		
+	}
+
+	@Override
+	public int getTotalItems() {
+		String sql = "select count(*) FROM news";
+		return count(sql);
+	}
+
 
 }

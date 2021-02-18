@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.learningjavaweb.dao.iNewDAO;
 import com.learningjavaweb.model.NewsModel;
 import com.learningjavaweb.service.iNewsService;
 import com.learningjavaweb.utils.HttpUtil;

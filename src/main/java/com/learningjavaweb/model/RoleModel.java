@@ -1,6 +1,6 @@
 package com.learningjavaweb.model;
 
-public class RoleModel extends AbstractModel {
+public class RoleModel extends AbstractModel<RoleModel> {
 	
 	private String code;
 	private String name;

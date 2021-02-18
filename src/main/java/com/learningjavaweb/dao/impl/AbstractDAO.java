@@ -7,13 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.learningjavaweb.dao.GenericDAO;
 import com.learningjavaweb.mapper.RowMapper;
-import com.learningjavaweb.model.NewsModel;
 
 public class AbstractDAO<T> implements GenericDAO<T> {
 
@@ -87,7 +85,6 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 					statement.setLong(index, (long) parameter);
 				} else if (parameter instanceof String) {
 					statement.setString(index, (String) parameter);
-
 				} else if (parameter instanceof Integer) {
 					statement.setInt(index, (Integer) parameter);
 				} else if (parameter instanceof Timestamp) {
@@ -182,6 +179,51 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public int count(String sql, Object... parameters) {
+		Connection connection = null;
+		/* Thao tác với query */
+		PreparedStatement statement = null;
+		/* kết quả trả về sau khi truy vấn */
+		ResultSet resultSet = null;
+
+		try {
+			int count = 0;
+			/* kết nối db */
+			connection = getConnection();
+			/* câu truy vấn */
+			statement = connection.prepareStatement(sql);
+			/* set giá trị của câu query(? được đánh index bắt đầu từ 1) */
+			setParameter(statement, parameters);
+			/* thực thi câu truy vấn để trả về kết quả */
+			resultSet = statement.executeQuery();
+			/* Kiểm tra kết quả và thêm vào List */
+			while (resultSet.next()) {
+				count = resultSet.getInt(1);
+			}
+			return count;
+		} catch (SQLException e) {
+			return 0;
+		} finally {
+
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (Exception e2) {
+				return 0;
+			}
+
+		}
+
 	}
 
 }
